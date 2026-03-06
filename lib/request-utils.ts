@@ -35,6 +35,17 @@ export function mapSearchParams(params: URLSearchParams): Record<string, string 
   return out;
 }
 
+export function sanitizeHeaders(headers: Headers): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [key, value] of headers.entries()) {
+    if (key.toLowerCase().startsWith("x-vercel-")) {
+      continue;
+    }
+    out[key] = value;
+  }
+  return out;
+}
+
 function isTextualContentType(contentType: string | null): boolean {
   if (!contentType) {
     return false;

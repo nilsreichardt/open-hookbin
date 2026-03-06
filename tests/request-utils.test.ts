@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { clampLimit, isReservedRootSegment, mapSearchParams, parseRequestBody } from "@/lib/request-utils";
+import {
+  clampLimit,
+  isReservedRootSegment,
+  mapSearchParams,
+  parseRequestBody,
+  sanitizeHeaders
+} from "@/lib/request-utils";
 
 describe("request utils", () => {
   it("flags reserved root segments", () => {
@@ -42,5 +48,17 @@ describe("request utils", () => {
     expect(clampLimit("500", 100, 200)).toBe(200);
     expect(clampLimit("-2", 100, 200)).toBe(1);
     expect(clampLimit(null, 100, 200)).toBe(100);
+  });
+
+  it("removes x-vercel headers", () => {
+    const headers = new Headers({
+      "content-type": "application/json",
+      "x-vercel-oidc-token": "secret",
+      "x-vercel-proxy-signature": "secret2"
+    });
+
+    expect(sanitizeHeaders(headers)).toEqual({
+      "content-type": "application/json"
+    });
   });
 });

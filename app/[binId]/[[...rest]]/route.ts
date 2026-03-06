@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { insertRequestLog, maybeCleanupExpiredLogs } from "@/lib/db";
-import { isReservedRootSegment, mapSearchParams, parseRequestBody } from "@/lib/request-utils";
+import {
+  isReservedRootSegment,
+  mapSearchParams,
+  parseRequestBody,
+  sanitizeHeaders
+} from "@/lib/request-utils";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,7 +32,7 @@ async function handleRequest(request: Request, context: { params: Promise<Params
     method: request.method,
     path: parsedUrl.pathname,
     query: mapSearchParams(parsedUrl.searchParams),
-    headers: Object.fromEntries(request.headers.entries()),
+    headers: sanitizeHeaders(request.headers),
     contentType: body.contentType,
     bodyText: body.bodyText,
     bodyBase64: body.bodyBase64,
