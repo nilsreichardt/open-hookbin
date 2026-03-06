@@ -7,6 +7,13 @@ type Props = {
   binId: string;
 };
 
+type DetailPanelProps = {
+  title: string;
+  value: string;
+  copied: boolean;
+  onCopy: () => void;
+};
+
 function formatTime(iso: string): string {
   return new Date(iso).toLocaleString();
 }
@@ -15,11 +22,26 @@ function prettyJson(value: unknown): string {
   return JSON.stringify(value, null, 2);
 }
 
+function DetailPanel({ title, value, copied, onCopy }: DetailPanelProps) {
+  return (
+    <section className="detail-panel">
+      <div className="detail-panel-header">
+        <h3>{title}</h3>
+        <button className="detail-copy-button" type="button" onClick={onCopy} aria-label={`Copy ${title}`}>
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+      <pre>{value}</pre>
+    </section>
+  );
+}
+
 export function ConsoleClient({ binId }: Props) {
   const [items, setItems] = useState<RequestLog[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [status, setStatus] = useState("connecting");
   const [polling, setPolling] = useState(false);
+  const [copiedPanel, setCopiedPanel] = useState<string | null>(null);
   const ids = useRef<Set<string>>(new Set());
 
   const loadPage = useCallback(async () => {
@@ -118,6 +140,14 @@ export function ConsoleClient({ binId }: Props) {
 
   const selected = useMemo(() => items.find((item) => item.id === selectedId) ?? null, [items, selectedId]);
 
+  const copyPanelValue = useCallback(async (panel: string, value: string) => {
+    await navigator.clipboard.writeText(value);
+    setCopiedPanel(panel);
+    window.setTimeout(() => {
+      setCopiedPanel((current) => (current === panel ? null : current));
+    }, 1200);
+  }, []);
+
   return (
     <main>
       <div className="card grid">
@@ -198,14 +228,33 @@ export function ConsoleClient({ binId }: Props) {
           <p>
             <small>Received: {formatTime(selected.receivedAt)}</small>
           </p>
-          <h3>Query</h3>
-          <pre>{prettyJson(selected.query)}</pre>
-          <h3>Headers</h3>
-          <pre>{prettyJson(selected.headers)}</pre>
-          <h3>Body</h3>
-          <pre>
-            {selected.bodyText ?? (selected.bodyBase64 ? `[base64]\n${selected.bodyBase64}` : "<empty>")}
-          </pre>
+          <DetailPanel
+            title="Query"
+            value={prettyJson(selected.query)}
+            copied={copiedPanel === "query"}
+            onCopy={() => {
+              void copyPanelValue("query", prettyJson(selected.query));
+            }}
+          />
+          <DetailPanel
+            title="Headers"
+            value={prettyJson(selected.headers)}
+            copied={copiedPanel === "headers"}
+            onCopy={() => {
+              void copyPanelValue("headers", prettyJson(selected.headers));
+            }}
+          />
+          <DetailPanel
+            title="Body"
+            value={selected.bodyText ?? (selected.bodyBase64 ? `[base64]\n${selected.bodyBase64}` : "<empty>")}
+            copied={copiedPanel === "body"}
+            onCopy={() => {
+              void copyPanelValue(
+                "body",
+                selected.bodyText ?? (selected.bodyBase64 ? `[base64]\n${selected.bodyBase64}` : "<empty>")
+              );
+            }}
+          />
           {selected.truncated ? (
             <p>
               <small>Body was truncated at 256 KB.</small>

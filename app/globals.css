@@ -153,6 +153,34 @@ button:hover {
   box-shadow: -6px 0 30px rgba(0, 0, 0, 0.12);
 }
 
+.detail-panel {
+  margin-top: 18px;
+}
+
+.detail-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.detail-panel-header h3 {
+  margin: 0;
+}
+
+.detail-copy-button {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+.detail-panel:hover .detail-copy-button,
+.detail-panel:focus-within .detail-copy-button {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 pre {
   margin: 0;
   background: #0f172a;
