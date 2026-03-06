@@ -40,9 +40,11 @@ npm run dev
 1. Create Neon project (free plan) and copy pooled `DATABASE_URL`.
 2. Deploy this repo to Vercel.
 3. Add `DATABASE_URL` and `CRON_SECRET` in Vercel environment variables.
-4. Keep `vercel.json` cron (`0 * * * *`) to trigger cleanup hourly.
+4. Keep `vercel.json` cron (`0 0 * * *`) to trigger cleanup daily (Vercel Hobby-compatible).
 
 If `CRON_SECRET` is set, Vercel sends `Authorization: Bearer <CRON_SECRET>` for cron requests automatically.
+
+Expired rows are still hidden immediately by read-time filtering (`last 24h`), and writes also run opportunistic cleanup. The daily cron handles bulk physical deletion.
 
 ## API response
 
