@@ -2,7 +2,7 @@ export default function HomePage() {
   return (
     <main>
       <div className="card grid">
-        <h1>Open Hookbin</h1>
+        <h1>OpenHookbin</h1>
         <p>Send webhook requests to any path and inspect them in a live console.</p>
         <p>
           Example:
@@ -16,10 +16,16 @@ export default function HomePage() {
         <details className="info-box">
           <summary>Header redaction</summary>
           <small>
-            Open Hookbin does not store or display some infrastructure headers, including <code>x-vercel-*</code>,{" "}
+            OpenHookbin does not store or display some infrastructure headers, including <code>x-vercel-*</code>,{" "}
             <code>forwarded</code>, <code>x-forwarded-*</code>, and <code>x-real-ip</code>.
           </small>
         </details>
+        <p>
+          Source code:{" "}
+          <a href="https://github.com/nilsreichardt/open-hookbin" target="_blank" rel="noreferrer">
+            github.com/nilsreichardt/open-hookbin
+          </a>
+        </p>
       </div>
     </main>
   );

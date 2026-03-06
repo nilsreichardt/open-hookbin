@@ -1,4 +1,4 @@
-# Open Hookbin
+# OpenHookbin
 
 Request bin + webhook inspector with live console, historical API, Neon storage, and 1-day TTL cleanup.
 

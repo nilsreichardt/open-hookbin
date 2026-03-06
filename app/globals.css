@@ -22,6 +22,38 @@ a {
   color: var(--accent);
 }
 
+.site-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 24px 0;
+}
+
+.site-nav,
+.footer-links {
+  display: flex;
+  align-items: start;
+  justify-content: start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.site-footer {
+  padding-bottom: 24px;
+}
+
 main {
   max-width: 1100px;
   margin: 0 auto;
@@ -38,6 +70,10 @@ main {
 .grid {
   display: grid;
   gap: 14px;
+}
+
+.legal-page {
+  max-width: 760px;
 }
 
 .toolbar {
@@ -131,6 +167,10 @@ small {
 }
 
 @media (max-width: 700px) {
+  .site-shell {
+    padding: 14px 14px 0;
+  }
+
   main {
     padding: 14px;
   }
