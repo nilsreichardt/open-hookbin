@@ -50,9 +50,12 @@ describe("request utils", () => {
     expect(clampLimit(null, 100, 200)).toBe(100);
   });
 
-  it("removes x-vercel headers", () => {
+  it("removes platform and forwarding headers", () => {
     const headers = new Headers({
       "content-type": "application/json",
+      forwarded: "for=1.2.3.4",
+      "x-forwarded-for": "1.2.3.4",
+      "x-real-ip": "1.2.3.4",
       "x-vercel-oidc-token": "secret",
       "x-vercel-proxy-signature": "secret2"
     });

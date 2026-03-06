@@ -52,6 +52,23 @@ main {
   overflow-x: auto;
 }
 
+.info-box {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #f8fbff;
+  padding: 12px 14px;
+}
+
+.info-box summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.info-box small {
+  display: block;
+  margin-top: 8px;
+}
+
 table {
   border-collapse: collapse;
   width: 100%;

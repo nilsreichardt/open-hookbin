@@ -38,7 +38,13 @@ export function mapSearchParams(params: URLSearchParams): Record<string, string 
 export function sanitizeHeaders(headers: Headers): Record<string, string> {
   const out: Record<string, string> = {};
   for (const [key, value] of headers.entries()) {
-    if (key.toLowerCase().startsWith("x-vercel-")) {
+    const lowerKey = key.toLowerCase();
+    if (
+      lowerKey.startsWith("x-vercel-") ||
+      lowerKey === "forwarded" ||
+      lowerKey === "x-real-ip" ||
+      lowerKey.startsWith("x-forwarded-")
+    ) {
       continue;
     }
     out[key] = value;

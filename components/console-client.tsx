@@ -142,6 +142,13 @@ export function ConsoleClient({ binId }: Props) {
             Send requests to <code>/{binId}</code> and inspect payloads here.
           </small>
         </div>
+        <details className="info-box">
+          <summary>Redacted headers</summary>
+          <small>
+            Some headers are removed before storage and display, including <code>x-vercel-*</code>,{" "}
+            <code>forwarded</code>, <code>x-forwarded-*</code>, and <code>x-real-ip</code>.
+          </small>
+        </details>
         <div className="table-wrap">
           <table>
             <thead>
