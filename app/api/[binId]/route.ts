@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listRequestLogs } from "@/lib/db";
+import { deleteRequestLogs, listRequestLogs } from "@/lib/db";
 import { clampLimit, isReservedRootSegment } from "@/lib/request-utils";
 
 export const runtime = "nodejs";
@@ -26,5 +26,21 @@ export async function GET(request: Request, context: { params: Promise<{ binId: 
     binId,
     items,
     nextBefore: items.length === limit ? items.at(-1)?.receivedAt ?? null : null
+  });
+}
+
+export async function DELETE(_request: Request, context: { params: Promise<{ binId: string }> }) {
+  const { binId } = await context.params;
+
+  if (!binId || isReservedRootSegment(binId)) {
+    return NextResponse.json({ error: "Invalid bin id" }, { status: 400 });
+  }
+
+  const deleted = await deleteRequestLogs(binId);
+
+  return NextResponse.json({
+    ok: true,
+    binId,
+    deleted
   });
 }

@@ -136,6 +136,20 @@ export async function cleanupExpiredLogs(): Promise<number> {
   return rows[0]?.deleted_count ?? 0;
 }
 
+export async function deleteRequestLogs(binId: string): Promise<number> {
+  const sql = getSqlClient();
+  const rows = (await sql`
+    WITH deleted AS (
+      DELETE FROM requests
+      WHERE bin_id = ${binId}
+      RETURNING 1
+    )
+    SELECT COUNT(*)::int AS deleted_count FROM deleted
+  `) as { deleted_count: number }[];
+
+  return rows[0]?.deleted_count ?? 0;
+}
+
 export async function maybeCleanupExpiredLogs(): Promise<void> {
   if (Math.random() > 0.05) {
     return;

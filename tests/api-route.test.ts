@@ -2,18 +2,26 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/db", () => ({
   listRequestLogs: vi.fn(),
+  deleteRequestLogs: vi.fn(),
   insertRequestLog: vi.fn(),
   maybeCleanupExpiredLogs: vi.fn(),
   cleanupExpiredLogs: vi.fn(),
   listRequestLogsSince: vi.fn()
 }));
 
-import { GET as getLogs } from "@/app/api/[binId]/route";
+import { DELETE as deleteLogs, GET as getLogs } from "@/app/api/[binId]/route";
 import { GET as getCleanup } from "@/app/api/internal/cleanup/route";
 import { POST as ingestPost } from "@/app/[binId]/[[...rest]]/route";
-import { cleanupExpiredLogs, insertRequestLog, listRequestLogs, maybeCleanupExpiredLogs } from "@/lib/db";
+import {
+  cleanupExpiredLogs,
+  deleteRequestLogs,
+  insertRequestLog,
+  listRequestLogs,
+  maybeCleanupExpiredLogs
+} from "@/lib/db";
 
 const listRequestLogsMock = vi.mocked(listRequestLogs);
+const deleteRequestLogsMock = vi.mocked(deleteRequestLogs);
 const insertRequestLogMock = vi.mocked(insertRequestLog);
 const maybeCleanupMock = vi.mocked(maybeCleanupExpiredLogs);
 const cleanupExpiredMock = vi.mocked(cleanupExpiredLogs);
@@ -82,6 +90,20 @@ describe("route handlers", () => {
     expect(response.status).toBe(200);
     expect(json.ok).toBe(true);
     expect(insertRequestLogMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("deletes all logs for a bin", async () => {
+    deleteRequestLogsMock.mockResolvedValue(4);
+
+    const response = await deleteLogs(new Request("https://example.com/api/demo", { method: "DELETE" }), {
+      params: Promise.resolve({ binId: "demo" })
+    });
+    const json = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(json.ok).toBe(true);
+    expect(json.deleted).toBe(4);
+    expect(deleteRequestLogsMock).toHaveBeenCalledWith("demo");
   });
 
   it("protects cleanup endpoint with cron secret", async () => {

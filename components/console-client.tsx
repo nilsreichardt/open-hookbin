@@ -42,6 +42,7 @@ export function ConsoleClient({ binId }: Props) {
   const [status, setStatus] = useState("connecting");
   const [polling, setPolling] = useState(false);
   const [copiedPanel, setCopiedPanel] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const ids = useRef<Set<string>>(new Set());
 
   const loadPage = useCallback(async () => {
@@ -148,6 +149,30 @@ export function ConsoleClient({ binId }: Props) {
     }, 1200);
   }, []);
 
+  const deleteAllLogs = useCallback(async () => {
+    const confirmed = window.confirm(`Delete all stored logs for "${binId}"?`);
+    if (!confirmed) {
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`/api/${encodeURIComponent(binId)}`, {
+        method: "DELETE"
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete logs: ${response.status}`);
+      }
+
+      ids.current = new Set();
+      setItems([]);
+      setSelectedId(null);
+    } finally {
+      setIsDeleting(false);
+    }
+  }, [binId]);
+
   return (
     <main>
       <div className="card grid">
@@ -159,13 +184,18 @@ export function ConsoleClient({ binId }: Props) {
               {polling ? " (fallback active)" : ""}
             </small>
           </div>
-          <button
-            onClick={() => {
-              void loadPage();
-            }}
-          >
-            Refresh
-          </button>
+          <div className="toolbar-actions">
+            <button
+              onClick={() => {
+                void loadPage();
+              }}
+            >
+              Refresh
+            </button>
+            <button className="danger-button" type="button" onClick={() => void deleteAllLogs()} disabled={isDeleting}>
+              {isDeleting ? "Deleting..." : "Delete all logs"}
+            </button>
+          </div>
         </div>
         <div>
           <small>
