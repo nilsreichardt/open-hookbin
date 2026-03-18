@@ -25,7 +25,7 @@ async function handleRequest(request: Request, context: { params: Promise<Params
   const parsedUrl = new URL(request.url);
   const body = await parseRequestBody(request);
   const now = new Date();
-  const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  const expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
 
   const inserted = await insertRequestLog({
     binId,

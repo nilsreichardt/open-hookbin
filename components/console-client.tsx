@@ -237,7 +237,7 @@ export function ConsoleClient({ binId }: Props) {
               {items.length === 0 ? (
                 <tr>
                   <td colSpan={5}>
-                    <small>No requests in the last 24h.</small>
+                    <small>No requests in the last 30 days.</small>
                   </td>
                 </tr>
               ) : null}

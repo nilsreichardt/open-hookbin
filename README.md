@@ -1,6 +1,6 @@
 # OpenHookbin
 
-Request bin + webhook inspector with live console, historical API, Neon storage, and 1-day TTL cleanup.
+Request bin + webhook inspector with live console, historical API, Neon storage, and 30-day TTL cleanup.
 
 ## Routes
 
@@ -44,7 +44,7 @@ npm run dev
 
 If `CRON_SECRET` is set, Vercel sends `Authorization: Bearer <CRON_SECRET>` for cron requests automatically.
 
-Expired rows are still hidden immediately by read-time filtering (`last 24h`), and writes also run opportunistic cleanup. The daily cron handles bulk physical deletion.
+Expired rows are still hidden immediately by read-time filtering (`last 30 days`), and writes also run opportunistic cleanup. The daily cron handles bulk physical deletion.
 
 ## API response
 

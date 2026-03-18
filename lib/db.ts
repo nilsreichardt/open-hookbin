@@ -82,7 +82,7 @@ export async function listRequestLogs(binId: string, limit: number, before?: str
       SELECT *
       FROM requests
       WHERE bin_id = ${binId}
-        AND received_at >= NOW() - INTERVAL '1 day'
+        AND received_at >= NOW() - INTERVAL '30 days'
         AND received_at < ${before}::timestamptz
       ORDER BY received_at DESC, id DESC
       LIMIT ${limit}
@@ -91,7 +91,7 @@ export async function listRequestLogs(binId: string, limit: number, before?: str
       SELECT *
       FROM requests
       WHERE bin_id = ${binId}
-        AND received_at >= NOW() - INTERVAL '1 day'
+        AND received_at >= NOW() - INTERVAL '30 days'
       ORDER BY received_at DESC, id DESC
       LIMIT ${limit}
     `) as RequestRow[];
@@ -110,7 +110,7 @@ export async function listRequestLogsSince(
     SELECT *
     FROM requests
     WHERE bin_id = ${binId}
-      AND received_at >= NOW() - INTERVAL '1 day'
+      AND received_at >= NOW() - INTERVAL '30 days'
       AND (
         received_at > ${since}::timestamptz
         OR (received_at = ${since}::timestamptz AND id > ${sinceId}::uuid)
